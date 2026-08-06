@@ -1,6 +1,5 @@
 # AI News Content Helper Skill
 
-[![Validate Skill](https://github.com/MarcusDog/ai-news-content-helper-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/MarcusDog/ai-news-content-helper-skill/actions/workflows/ci.yml)
 [![Website](https://img.shields.io/badge/AI%20News-ainews.xiaotianaya.com-0891b2)](https://ainews.xiaotianaya.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
