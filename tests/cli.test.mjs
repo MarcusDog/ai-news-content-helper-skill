@@ -114,6 +114,29 @@ test('client exposes the latest daily filter-bubble review with its source ledge
   assert.equal(result.sources[0].citationId, 'S1');
 });
 
+test('review falls back to the deployed diversity snapshot before the daily endpoint is released', async () => {
+  const fetchImpl = async (url) => {
+    if (String(url).endsWith('/api/analytics/diversity-review')) {
+      return new Response(JSON.stringify({ success: false, error: '接口不存在' }), { status: 404 });
+    }
+    return new Response(JSON.stringify({
+      success: true,
+      data: {
+        diversityScore: 55,
+        riskLevel: 'medium',
+        sourceDistribution: [{ name: 'arXiv', percentage: 70 }]
+      }
+    }), { status: 200 });
+  };
+  const client = new AiNewsClient({ baseUrl: 'https://ainews.example', fetchImpl });
+
+  const result = await client.review();
+
+  assert.equal(result.status, 'live_snapshot');
+  assert.equal(result.score, 55);
+  assert.match(result.summary, /兼容接口/);
+});
+
 test('local brief fallback creates diverse cited evidence without inventing claims', () => {
   const brief = buildLocalBrief(articles, {
     topic: 'Agent',

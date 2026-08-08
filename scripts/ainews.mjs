@@ -296,8 +296,36 @@ export class AiNewsClient {
   async review() {
     const endpoint = '/api/analytics/diversity-review';
     const response = await this.fetchJson(endpoint);
-    const payload = this.assertResponse(response, [endpoint]);
-    return { ...(payload.data || {}), endpoint };
+    if (response.ok && response.payload?.success !== false) {
+      return { ...(response.payload.data || {}), endpoint };
+    }
+
+    const fallbackEndpoint = '/api/analytics/diversity';
+    const fallback = await this.fetchJson(fallbackEndpoint);
+    const payload = this.assertResponse(fallback, [endpoint, fallbackEndpoint]);
+    const snapshot = payload.data || {};
+    const score = Number(snapshot.diversityScore) || 0;
+    const dominant = Array.isArray(snapshot.sourceDistribution) ? snapshot.sourceDistribution[0] : null;
+    const dominantText = dominant
+      ? `当前占比最高的来源是 ${dominant.name}（${dominant.percentage || 0}%）`
+      : '当前未返回来源集中度明细';
+    return {
+      status: 'live_snapshot',
+      score,
+      riskLevel: snapshot.riskLevel || (score < 45 ? 'high' : score < 70 ? 'medium' : 'low'),
+      summary: `每日模型复核接口尚未部署，当前使用网站兼容接口的实时多样性快照；${dominantText} [S1]。`,
+      sources: [{
+        citationId: 'S1',
+        title: 'AI News 实时信息茧房分析',
+        source: 'AI News 站内分析',
+        url: `${this.baseUrl}${fallbackEndpoint}`,
+        evidenceType: 'internal-analysis',
+        region: 'site',
+        claimBoundary: '只反映网站当前已收录样本，不代表整个 AI 行业。'
+      }],
+      metrics: snapshot,
+      endpoint: fallbackEndpoint
+    };
   }
 
   async brief(options = {}) {
