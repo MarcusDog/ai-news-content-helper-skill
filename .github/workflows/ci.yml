@@ -18,5 +18,5 @@ jobs:
       - run: npm test
       - run: node install.mjs --target-dir "${RUNNER_TEMP}/agent-skills"
       - run: node package.mjs
-      - run: test -f dist/ai-news-content-helper.zip
-      - run: test -f dist/ai-news-content-helper.tar.gz
+      - run: test -f dist/AyaNewsSkill.zip
+      - run: test -f dist/AyaNewsSkill.tar.gz

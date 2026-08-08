@@ -1,9 +1,9 @@
 ---
-name: ai-news-content-helper
+name: aya-news-skill
 description: Use when a user asks for current AI news synthesis, topic research, trend interpretation, self-media scripts or articles, or practical AI advice that must remain verifiable and avoid a single-source filter bubble.
 ---
 
-# AI News Content Helper
+# AyaNewsSkill
 
 Turn current AI news into useful content without hiding uncertainty or trapping the reader in one source ecosystem. Prefer helping a specific audience solve a concrete problem over merely summarizing headlines.
 
@@ -28,6 +28,8 @@ node "<skill-directory>/scripts/ainews.mjs" doctor
 ```
 
 The client is permanently bound by default to `https://ainews.xiaotianaya.com`. It automatically prefers Content API v1 and falls back to the site's deployed read-only legacy endpoints. Override with `AI_NEWS_API_BASE_URL` only for an explicitly provided mirror or local development server.
+
+The installed directory is always `aya-news-skill`, regardless of whether the archive is copied, cloned, or installed into Codex, Claude Code, or a generic Agent Skills directory. Resolve every bundled file relative to this `SKILL.md`; never assume the repository checkout path.
 
 If `doctor` returns `ok: false`, report the attempted endpoints and stop. Do not scrape arbitrary pages, invent news, or switch to an unrelated provider without the user's approval.
 
@@ -82,6 +84,14 @@ Before drafting, check:
 - at least one source that adds a different perspective, limitation, or counterpoint.
 
 If a condition cannot be met, disclose that gap near the conclusion.
+
+When the user asks about the site's overall filter bubble or source health, read the latest scheduled model review before drafting:
+
+```bash
+node "<skill-directory>/scripts/ainews.mjs" review
+```
+
+Treat this review as a diagnosis of the site's collected sample, not a measurement of the whole AI industry.
 
 ### 4. Separate claim layers
 

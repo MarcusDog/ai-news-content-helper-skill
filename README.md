@@ -1,4 +1,4 @@
-# AI News Content Helper Skill
+# AyaNewsSkill
 
 [![Website](https://img.shields.io/badge/AI%20News-ainews.xiaotianaya.com-0891b2)](https://ainews.xiaotianaya.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -10,6 +10,7 @@
 ## 功能效果
 
 - 自动读取 AI News 最新资讯、搜索结果和趋势。
+- 可读取网站每天生成的信息茧房复核，了解地区、发布者和证据类型缺口。
 - 默认绑定 `https://ainews.xiaotianaya.com`，无需 API Key。
 - 自动探测 Content API v1；新版接口尚未部署时，无感回退到网站当前兼容接口。
 - 对官方、研究、媒体和工程社区证据分类，并提示各自的事实边界。
@@ -23,16 +24,16 @@
 ### Codex
 
 ```bash
-git clone --depth 1 https://github.com/MarcusDog/ai-news-content-helper-skill.git
-cd ai-news-content-helper-skill
+git clone --depth 1 https://github.com/MarcusDog/AyaNewsSkill.git
+cd AyaNewsSkill
 node install.mjs --target codex
 ```
 
 ### Claude Code
 
 ```bash
-git clone --depth 1 https://github.com/MarcusDog/ai-news-content-helper-skill.git
-cd ai-news-content-helper-skill
+git clone --depth 1 https://github.com/MarcusDog/AyaNewsSkill.git
+cd AyaNewsSkill
 node install.mjs --target claude
 ```
 
@@ -56,14 +57,15 @@ node install.mjs --target-dir /absolute/path/to/skills
 
 ```text
 请安装并验证这个 Agent Skill：
-https://github.com/MarcusDog/ai-news-content-helper-skill
+https://github.com/MarcusDog/AyaNewsSkill
 
 要求：
 1. 克隆仓库；
 2. 根据当前运行环境执行 node install.mjs --target codex、claude 或 agents；
 3. 执行已安装目录中的 scripts/ainews.mjs doctor；
-4. 只有 doctor 返回 ok: true 才宣布安装完成；
-5. 不要配置、读取或上传任何 API Key。
+4. 再执行 scripts/ainews.mjs review，确认能读取每日信息茧房复核；
+5. 只有 doctor 返回 ok: true 才宣布安装完成；
+6. 不要配置、读取或上传任何 API Key。
 ```
 
 ## 安装后验证
@@ -101,6 +103,9 @@ node scripts/ainews.mjs search --query "AI Agent" --limit 20
 # 等长窗口趋势
 node scripts/ainews.mjs trends
 
+# 最近一次每日信息茧房复核
+node scripts/ainews.mjs review
+
 # 生成面向具体受众的多来源证据包
 node scripts/ainews.mjs brief \
   --topic "AI Agent" \
@@ -119,7 +124,7 @@ node scripts/ainews.mjs brief \
 
 安装后直接提出自然语言请求即可，例如：
 
-- “使用 AI News Content Helper 分析最近 7 天 AI Agent 的变化，每个判断给出原文。”
+- “使用 AyaNewsSkill 分析最近 7 天 AI Agent 的变化，每个判断给出原文。”
 - “比较国内外大模型发布中的不同观点，指出当前信息茧房。”
 - “为小型电商生成一份有来源的 60 秒 AI 客服选题口播，不要使用无依据的降本数字。”
 - “把今天的重要 AI 新闻整理成一份帮助产品经理做决策的 Newsletter。”
@@ -136,7 +141,7 @@ https://ainews.xiaotianaya.com
 
 网站和 Skill 可以独立发布。网站升级时保持 [部署接口契约](references/site-deployment-contract.md)，Skill 就会自动从兼容接口切换到 Content API v1，无需重新安装。
 
-开发或自建镜像可以临时覆盖：
+安装后的运行目录固定名为 `aya-news-skill`。脚本、模板和引用规范都按 `SKILL.md` 的相对路径读取，不依赖仓库被克隆到哪个绝对位置。开发或自建镜像可以临时覆盖：
 
 ```bash
 export AI_NEWS_API_BASE_URL=https://your-ainews-domain.example
@@ -168,8 +173,8 @@ npm run pack:skill
 
 打包后生成：
 
-- `dist/ai-news-content-helper.zip`
-- `dist/ai-news-content-helper.tar.gz`
+- `dist/AyaNewsSkill.zip`
+- `dist/AyaNewsSkill.tar.gz`
 - `dist/SHA256SUMS`
 
 发布包只包含 Agent 运行所需的 `SKILL.md`、`agents/`、`assets/`、`references/` 和 `scripts/`，不会包含测试、Git 配置或本地环境文件。
@@ -186,7 +191,7 @@ npm run pack:skill
 
 ### Agent 没有自动使用 Skill
 
-确认 `SKILL.md` 位于 Agent 实际扫描的技能目录下，然后重新启动 Agent。也可以在请求中明确说“使用 `$ai-news-content-helper`”。
+确认 `SKILL.md` 位于 Agent 实际扫描的技能目录下，然后重新启动 Agent。也可以在请求中明确说“使用 `$aya-news-skill`”。
 
 ### 如何更新
 

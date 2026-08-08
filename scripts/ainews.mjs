@@ -198,7 +198,7 @@ export class AiNewsClient {
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
       const response = await this.fetchImpl(`${this.baseUrl}${endpoint}`, {
-        headers: { Accept: 'application/json', 'User-Agent': 'ai-news-content-helper-skill/1.0' },
+        headers: { Accept: 'application/json', 'User-Agent': 'AyaNewsSkill/2.0' },
         signal: controller.signal
       });
       const text = await response.text();
@@ -293,6 +293,13 @@ export class AiNewsClient {
     return { apiMode: 'legacy-compatible', data: payload.data, endpoint: legacyEndpoint };
   }
 
+  async review() {
+    const endpoint = '/api/analytics/diversity-review';
+    const response = await this.fetchJson(endpoint);
+    const payload = this.assertResponse(response, [endpoint]);
+    return { ...(payload.data || {}), endpoint };
+  }
+
   async brief(options = {}) {
     const params = new URLSearchParams({
       topic: String(options.topic || ''),
@@ -359,7 +366,7 @@ function parseArguments(argumentsList) {
 }
 
 function helpText() {
-  return `AI News Content Helper CLI\n\nUsage:\n  node scripts/ainews.mjs doctor\n  node scripts/ainews.mjs latest --limit 10 [--category AI新闻]\n  node scripts/ainews.mjs search --query "AI Agent" --limit 20\n  node scripts/ainews.mjs trends\n  node scripts/ainews.mjs brief --topic "AI Agent" --audience "小型团队" --goal "评估落地" --format article\n\nConfiguration:\n  AI_NEWS_API_BASE_URL=${DEFAULT_BASE_URL}\n  --base-url https://your-domain.example\n`;
+  return `AyaNewsSkill CLI\n\nUsage:\n  node scripts/ainews.mjs doctor\n  node scripts/ainews.mjs latest --limit 10 [--category AI新闻]\n  node scripts/ainews.mjs search --query "AI Agent" --limit 20\n  node scripts/ainews.mjs trends\n  node scripts/ainews.mjs review\n  node scripts/ainews.mjs brief --topic "AI Agent" --audience "小团队" --goal "评估落地" --format article\n\nConfiguration:\n  AI_NEWS_API_BASE_URL=${DEFAULT_BASE_URL}\n  --base-url https://your-domain.example\n`;
 }
 
 export async function runCli(argumentsList = process.argv.slice(2)) {
@@ -372,6 +379,7 @@ export async function runCli(argumentsList = process.argv.slice(2)) {
   if (command === 'latest') return client.latest({ limit: args.limit, category: args.category });
   if (command === 'search') return client.search(args.query || args.q || args._[1], { limit: args.limit, category: args.category });
   if (command === 'trends') return client.trends();
+  if (command === 'review') return client.review();
   if (command === 'brief') return client.brief({
     topic: args.topic,
     audience: args.audience,

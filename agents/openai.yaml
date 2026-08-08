@@ -1,4 +1,4 @@
 interface:
-  display_name: "AI News 内容助手"
+  display_name: "AyaNewsSkill"
   short_description: "连接 AI News 的多源证据与反信息茧房内容助手"
-  default_prompt: "Use $ai-news-content-helper to research a current AI topic and answer in Chinese with diverse sources and inline citations."
+  default_prompt: "Use $aya-news-skill to research a current AI topic and answer in Chinese with diverse sources and inline citations."

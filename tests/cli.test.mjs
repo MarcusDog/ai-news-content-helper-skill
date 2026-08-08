@@ -60,6 +60,10 @@ before(async () => {
       response.end(JSON.stringify({ success: true, data: { topKeywords: [], comparison: { status: 'insufficient_history' } } }));
       return;
     }
+    if (request.url.startsWith('/api/analytics/diversity-review')) {
+      response.end(JSON.stringify({ success: true, data: { status: 'verified', score: 81, summary: '多样性复核完成 [S1]。', sources: [{ citationId: 'S1', url: 'https://source.test' }] } }));
+      return;
+    }
     if (request.url === '/health') {
       response.end(JSON.stringify({ status: 'ok' }));
       return;
@@ -99,6 +103,15 @@ test('doctor reports ready when either v1 or the legacy compatibility layer is a
   assert.equal(result.ok, true);
   assert.equal(result.apiMode, 'legacy-compatible');
   assert.equal(result.website, baseUrl);
+});
+
+test('client exposes the latest daily filter-bubble review with its source ledger', async () => {
+  const client = new AiNewsClient({ baseUrl });
+  const result = await client.review();
+
+  assert.equal(result.status, 'verified');
+  assert.equal(result.score, 81);
+  assert.equal(result.sources[0].citationId, 'S1');
 });
 
 test('local brief fallback creates diverse cited evidence without inventing claims', () => {

@@ -19,10 +19,10 @@ test('installer copies only runtime skill files and protects an existing install
     const skillText = await readFile(path.join(result.installDir, 'SKILL.md'), 'utf8');
     const cliText = await readFile(path.join(result.installDir, 'scripts', 'ainews.mjs'), 'utf8');
 
-    assert.match(skillText, /ai-news-content-helper/);
+    assert.match(skillText, /aya-news-skill/);
     assert.match(cliText, /AiNewsClient/);
     const { stdout } = await execFileAsync(process.execPath, [path.join(result.installDir, 'scripts', 'ainews.mjs'), '--help']);
-    assert.match(stdout, /AI News Content Helper CLI/);
+    assert.match(stdout, /AyaNewsSkill CLI/);
     await assert.rejects(
       installSkill({ sourceDir: projectRoot, targetRoot: temporaryRoot }),
       /已经存在/
@@ -30,6 +30,7 @@ test('installer copies only runtime skill files and protects an existing install
 
     const forced = await installSkill({ sourceDir: projectRoot, targetRoot: temporaryRoot, force: true });
     assert.equal(forced.installDir, result.installDir);
+    assert.equal(result.skillName, 'aya-news-skill');
   } finally {
     await rm(temporaryRoot, { recursive: true, force: true });
   }

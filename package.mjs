@@ -6,12 +6,12 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-import { runtimeEntries } from './install.mjs';
+import { archiveBaseName, runtimeEntries, skillName } from './install.mjs';
 
 const repositoryRoot = path.dirname(fileURLToPath(import.meta.url));
 const outputDirectory = path.join(repositoryRoot, 'dist');
 const stageDirectory = path.join(outputDirectory, 'stage');
-const stagedSkill = path.join(stageDirectory, 'ai-news-content-helper');
+const stagedSkill = path.join(stageDirectory, skillName);
 
 function run(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -33,10 +33,10 @@ async function main() {
     await cp(path.join(repositoryRoot, entry), path.join(stagedSkill, entry), { recursive: true });
   }
 
-  const zipPath = path.join(outputDirectory, 'ai-news-content-helper.zip');
-  const tarPath = path.join(outputDirectory, 'ai-news-content-helper.tar.gz');
-  await run('zip', ['-qr', zipPath, 'ai-news-content-helper'], { cwd: stageDirectory });
-  await run('tar', ['-czf', tarPath, 'ai-news-content-helper'], { cwd: stageDirectory });
+  const zipPath = path.join(outputDirectory, `${archiveBaseName}.zip`);
+  const tarPath = path.join(outputDirectory, `${archiveBaseName}.tar.gz`);
+  await run('zip', ['-qr', zipPath, skillName], { cwd: stageDirectory });
+  await run('tar', ['-czf', tarPath, skillName], { cwd: stageDirectory });
   const sums = [
     `${await checksum(zipPath)}  ${path.basename(zipPath)}`,
     `${await checksum(tarPath)}  ${path.basename(tarPath)}`

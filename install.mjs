@@ -7,7 +7,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const runtimeEntries = ['SKILL.md', 'agents', 'assets', 'references', 'scripts'];
-const skillName = 'ai-news-content-helper';
+export const skillName = 'aya-news-skill';
+export const archiveBaseName = 'AyaNewsSkill';
 const repositoryRoot = path.dirname(fileURLToPath(import.meta.url));
 
 async function exists(target) {
